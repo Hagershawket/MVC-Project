@@ -21,6 +21,6 @@ namespace LinkDev.IKEA.DAL.Persistence.Data
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         }
 
-        DbSet<Department> Departments { get; set; }
+        public DbSet<Department> Departments { get; set; }
     }
 }
