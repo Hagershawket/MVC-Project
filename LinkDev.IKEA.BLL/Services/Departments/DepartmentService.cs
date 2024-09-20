@@ -26,7 +26,6 @@ namespace LinkDev.IKEA.BLL.Services.Departments
                 Id = department.Id,
                 Code = department.Code,
                 Name = department.Name,
-                Description = department.Description,
                 CreationDate = department.CreationDate,
             }).AsNoTracking().ToList();
 
@@ -90,7 +89,7 @@ namespace LinkDev.IKEA.BLL.Services.Departments
         {
             var department = _departmentRepository.Get(id);
             if (department is { })
-                return _departmentRepository.Delete(id) > 0;
+                return _departmentRepository.Delete(department) > 0;
 
             return false;
         }
