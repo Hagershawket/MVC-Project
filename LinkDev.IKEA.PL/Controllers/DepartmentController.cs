@@ -1,5 +1,7 @@
 ﻿using LinkDev.IKEA.BLL.Models.Departments;
 using LinkDev.IKEA.BLL.Services.Departments;
+using LinkDev.IKEA.PL.ViewModels.Common;
+using LinkDev.IKEA.PL.ViewModels.Departments;
 using Microsoft.AspNetCore.Mvc;
 using System;
 
@@ -24,6 +26,19 @@ namespace LinkDev.IKEA.PL.Controllers
         {
             var departments = _departmentService.GetAllDepartments();
             return View(departments);
+        }
+
+        [HttpGet] // /Department/Details
+        public IActionResult Details(int? id)
+        {
+            if (id is null)
+                return BadRequest();
+
+            var department = _departmentService.GetDepartmentById(id.Value);
+            if (department is null)
+                return NotFound();
+
+            return View(department);
         }
 
         [HttpGet] // GET: /Department/Create
@@ -58,29 +73,70 @@ namespace LinkDev.IKEA.PL.Controllers
                 _logger.LogError(ex, ex.Message);
 
                 // 2. Set Message
-                if (_environment.IsDevelopment())
-                {
-                    message = ex.Message;
-                    return View(department);
-                }
-                else
-                {
-                    message = "Department is not Created";
-                    return View("Error", message);
-                }
+                message = _environment.IsDevelopment() ? ex.Message : "an error has occured during creating the department :(";
+
             }
+
+            ModelState.AddModelError(string.Empty, message);
+            return View(department);
         }
 
-        [HttpGet] // /Department/Details
-        public IActionResult Details(int? id)
+        [HttpGet]   // Department/Edit/id?
+        public IActionResult Edit(int? id)
         {
-            if (id is null)
-                return BadRequest();
+            if(id is null)
+                return BadRequest();    // 400
 
             var department = _departmentService.GetDepartmentById(id.Value);
-            if (department is null)
-                return NotFound();
 
+            if(department is null)
+                return NotFound();      // 404
+
+            return View(new DepartmentEditViewModel()
+            {
+                Name = department.Name,
+                Code = department.Code,
+                Description = department.Description,
+                CreationDate = department.CreationDate,
+            });
+        }
+
+        [HttpPost]   // POST
+        public IActionResult Edit([FromRoute] int id, DepartmentEditViewModel department)
+        {
+            if(!ModelState.IsValid)           // Server-Side Validation
+                return View(department);
+
+            var message = string.Empty;
+
+            try
+            {
+                var departmentToUpdate = new UpdatedDepartmentDto()
+                {
+                    Id = id,
+                    Name = department.Name,
+                    Code = department.Code,
+                    Description = department.Description,
+                    CreationDate = department.CreationDate,
+                };
+
+                var updated = _departmentService.UpdateDepartment(departmentToUpdate) > 0;
+
+                if (updated)
+                    return RedirectToAction(nameof(Index));
+
+                message = "an error has occured during updating the department :(";
+            }
+            catch (Exception ex)
+            {
+                // 1. Log Exception
+                _logger.LogError(ex, ex.Message);
+
+                // 2. Set Message
+                message = _environment.IsDevelopment() ? ex.Message : "an error has occured during updating the department :(";
+            }
+
+            ModelState.AddModelError(string.Empty, message);
             return View(department);
         }
     }
