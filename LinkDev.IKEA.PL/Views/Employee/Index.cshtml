@@ -22,8 +22,8 @@
                 <th>@Html.DisplayNameFor(D => D.EmployeeType)</th>
                 <th>@Html.DisplayNameFor(D => D.Salary)</th>
                 <th>@Html.DisplayNameFor(D => D.Age)</th>
-                <th>@Html.DisplayNameFor(D => D.IsActive)</th>
                 <th>@Html.DisplayNameFor(D => D.Gender)</th>
+                <th>@Html.DisplayNameFor(D => D.IsActive)</th>
                 <th>Details</th>
                 <th>Update</th>
                 <th>Delete</th>
@@ -38,8 +38,8 @@
                     <td>@Html.DisplayFor(X => employee.EmployeeType)</td>
                     <td>@Html.DisplayFor(X => employee.Salary)</td>
                     <td>@Html.DisplayFor(X => employee.Age)</td>
-                    <td>@Html.DisplayFor(X => employee.IsActive)</td>
                     <td>@Html.DisplayFor(X => employee.Gender)</td>
+                    <td>@Html.DisplayFor(X => employee.IsActive)</td>
                     <td>
                         <a asp-controller="Employee" asp-action="Details" asp-route-id="@employee.Id" class="btn btn-warning">
                             <i class="fas fa-eye"></i> Details
