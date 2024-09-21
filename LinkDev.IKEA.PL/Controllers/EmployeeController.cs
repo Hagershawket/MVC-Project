@@ -94,64 +94,61 @@ namespace LinkDev.IKEA.PL.Controllers
 
         #region Update
 
-        // [HttpGet]   // Employee/Edit/id?
-        // public IActionResult Edit(int? id)
-        // {
-        //     if (id is null)
-        //         return BadRequest();    // 400
-        // 
-        //     var employee = _employeeService.GetEmployeeById(id.Value);
-        // 
-        //     if (employee is null)
-        //         return NotFound();      // 404
-        // 
-        //     return View(new EmployeeEditViewModel()
-        //     {
-        //         Name = employee.Name,
-        //         Code = employee.Code,
-        //         Description = employee.Description,
-        //         CreationDate = employee.CreationDate,
-        //     });
-        // }
-        // 
-        // [HttpPost]   // POST
-        // public IActionResult Edit([FromRoute] int id, EmployeeEditViewModel Employee)
-        // {
-        //     if (!ModelState.IsValid)           // Server-Side Validation
-        //         return View(Employee);
-        // 
-        //     var message = string.Empty;
-        // 
-        //     try
-        //     {
-        //         var employeeToUpdate = new UpdatedEmployeeDto()
-        //         {
-        //             Id = id,
-        //             Name = Employee.Name,
-        //             Code = Employee.Code,
-        //             Description = Employee.Description,
-        //             CreationDate = Employee.CreationDate,
-        //         };
-        // 
-        //         var updated = _employeeService.UpdateEmployee(employeeToUpdate) > 0;
-        // 
-        //         if (updated)
-        //             return RedirectToAction(nameof(Index));
-        // 
-        //         message = "an error has occured during updating the Employee :(";
-        //     }
-        //     catch (Exception ex)
-        //     {
-        //         // 1. Log Exception
-        //         _logger.LogError(ex, ex.Message);
-        // 
-        //         // 2. Set Message
-        //         message = _environment.IsDevelopment() ? ex.Message : "an error has occured during updating the Employee :(";
-        //     }
-        // 
-        //     ModelState.AddModelError(string.Empty, message);
-        //     return View(Employee);
-        // }
+        [HttpGet]   // Employee/Edit/id?
+        public IActionResult Edit(int? id)
+        {
+            if (id is null)
+                return BadRequest();    // 400
+        
+            var employee = _employeeService.GetEmployeeById(id.Value);
+        
+            if (employee is null)
+                return NotFound();      // 404
+        
+            return View(new UpdatedEmployeeDto()
+            {
+                Name = employee.Name,
+                Address = employee.Address,
+                Email = employee.Email,
+                Age = employee.Age,
+                Salary = employee.Salary,
+                PhoneNumber = employee.PhoneNumber,
+                IsActive = employee.IsActive,
+                EmployeeType = employee.EmployeeType,
+                Gender = employee.Gender,
+                HiringDate = employee.HiringDate,
+            });
+        }
+        
+        [HttpPost]   // POST
+        public IActionResult Edit([FromRoute] int id, UpdatedEmployeeDto employee)
+        {
+            if (!ModelState.IsValid)           // Server-Side Validation
+                return View(employee);
+        
+            var message = string.Empty;
+        
+            try
+            {
+                var updated = _employeeService.UpdateEmployee(employee) > 0;
+        
+                if (updated)
+                    return RedirectToAction(nameof(Index));
+        
+                message = "an error has occured during updating the Employee :(";
+            }
+            catch (Exception ex)
+            {
+                // 1. Log Exception
+                _logger.LogError(ex, ex.Message);
+        
+                // 2. Set Message
+                message = _environment.IsDevelopment() ? ex.Message : "an error has occured during updating the Employee :(";
+            }
+        
+            ModelState.AddModelError(string.Empty, message);
+            return View(employee);
+        }
 
         #endregion
 
