@@ -28,5 +28,14 @@ namespace LinkDev.IKEA.BLL.Models.Employees
         public DateOnly HiringDate { get; set; }
         public string Gender { get; set; } = null!;
         public string EmployeeType { get; set; } = null!;
+
+        #region Adminstraion 
+        public int CreatedBy { get; set; }
+        public DateTime CreatedOn { get; set; }
+        public int LastModifiedBy { get; set; }
+        public DateTime LastModifiedOn { get; set; }
+        public DateOnly CreationDate { get; set; } 
+
+        #endregion
     }
 }

@@ -1,5 +1,4 @@
 ﻿using LinkDev.IKEA.DAL.Entities;
-using LinkDev.IKEA.DAL.Entities.T;
 using System;
 using System.Collections.Generic;
 using System.Linq;
