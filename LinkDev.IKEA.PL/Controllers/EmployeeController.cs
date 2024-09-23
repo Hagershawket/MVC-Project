@@ -1,4 +1,5 @@
 ﻿using LinkDev.IKEA.BLL.Models.Employees;
+using LinkDev.IKEA.BLL.Services.Departments;
 using LinkDev.IKEA.BLL.Services.Employees;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,9 +10,14 @@ namespace LinkDev.IKEA.PL.Controllers
         #region Services [Dependency Injection]
 
         private readonly IEmployeeService _employeeService;
+        private readonly IDepartmentService? _departmentService;
         private readonly ILogger<EmployeeController> _logger;
         private readonly IWebHostEnvironment _environment;
-        public EmployeeController(IEmployeeService employeeService, ILogger<EmployeeController> logger, IWebHostEnvironment environment)
+        public EmployeeController(
+            IEmployeeService employeeService, 
+            ILogger<EmployeeController> logger, 
+            IWebHostEnvironment environment
+            )
         {
             _employeeService = employeeService;
             _logger = logger;
