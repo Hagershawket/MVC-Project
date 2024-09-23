@@ -63,6 +63,7 @@ namespace LinkDev.IKEA.PL.Controllers
         }
 
         [HttpPost] // POST
+        [ValidateAntiForgeryToken]
         public IActionResult Create(CreatedDepartmentDto department)
         {
             if (!ModelState.IsValid)            // Server-Side Validation
@@ -121,6 +122,7 @@ namespace LinkDev.IKEA.PL.Controllers
         }
 
         [HttpPost]   // POST
+        [ValidateAntiForgeryToken]
         public IActionResult Edit([FromRoute] int id, DepartmentEditViewModel department)
         {
             if (!ModelState.IsValid)           // Server-Side Validation
@@ -178,6 +180,7 @@ namespace LinkDev.IKEA.PL.Controllers
         }
 
         [HttpPost]  // POST
+        [ValidateAntiForgeryToken]
         public IActionResult Delete(int id)
         {
             var message = string.Empty;
