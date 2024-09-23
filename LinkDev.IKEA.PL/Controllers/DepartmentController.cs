@@ -92,15 +92,18 @@ namespace LinkDev.IKEA.PL.Controllers
                     Description = departmentVM.Description,
                     CreationDate = departmentVM.CreationDate,
                 };
-                var result = _departmentService.CreateDepartment(createdDepartment);
-                if (result > 0)
-                    return RedirectToAction(nameof(Index));
+                var created = _departmentService.CreateDepartment(createdDepartment) > 0;
+
+                // 3. TempData: is a property of Type Dictionary Object (introduced in ASP.NET Framework 3.5)
+                //            : used for transfering the data between 2 consuctive Requests
+
+                if (created)
+                    message = "Department is Created";
                 else
-                {
                     message = "Department is not Created";
-                    ModelState.AddModelError(string.Empty, message);
-                    return View(departmentVM);
-                }
+
+                return RedirectToAction(nameof(Index));
+                
 
             }
             catch (Exception ex)
@@ -111,10 +114,13 @@ namespace LinkDev.IKEA.PL.Controllers
                 // 2. Set Message
                 message = _environment.IsDevelopment() ? ex.Message : "an error has occured during creating the department :(";
 
+                TempData["Message"] = message;
+
             }
 
             ModelState.AddModelError(string.Empty, message);
             return View(departmentVM);
+
         }
 
         #endregion
