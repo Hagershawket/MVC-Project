@@ -31,6 +31,19 @@ namespace LinkDev.IKEA.PL.Controllers
         [HttpGet] // GET: /Department/Index
         public IActionResult Index()
         {
+            // View's Dictionary: Pass Data from Controller[Action] to View (from View -> [PartialView, Layout])
+
+            /// 1. ViewData is a Dictionary Type Property (Introduced in ASP.NET Framework 3.5)
+            ///    => It helps us to transfer the data from the controller[Action] to View
+
+             ViewData["Obj"] = "Hello ViewData";
+
+            /// 2. ViewBag is a Dynamic Type Property (Introduced in ASP.NET Framework 4.0 based on dynamic Feature)
+            ///    => It helps us to transfer the data from the controller[Action] to View
+
+            ViewBag.Obj = "Hello ViewBag";
+            // ViewBag.Obj = new { Id = 10, Name = "Ahmed"};
+
             var departments = _departmentService.GetAllDepartments();
             return View(departments);
         }
