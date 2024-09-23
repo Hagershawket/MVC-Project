@@ -22,19 +22,19 @@ namespace LinkDev.IKEA.BLL.Services.Employees
         public IEnumerable<EmployeeDto> GetAllEmployees()
         {
             var employees = _employeeRepository
-                            .GetAllAsIQueryable()
+                            .GetIQueryable()
                             .Where(E => !E.IsDeleted)
                             .Select(employee => new EmployeeDto()
-            {
-                Id = employee.Id,
-                Name = employee.Name,
-                Age = employee.Age,
-                IsActive = employee.IsActive,
-                Salary = employee.Salary,
-                Email = employee.Email,
-                Gender = employee.Gender.ToString(),
-                EmployeeType = employee.EmployeeType.ToString(),
-            }).ToList();
+                            {
+                                Id = employee.Id,
+                                Name = employee.Name,
+                                Age = employee.Age,
+                                IsActive = employee.IsActive,
+                                Salary = employee.Salary,
+                                Email = employee.Email,
+                                Gender = employee.Gender.ToString(),
+                                EmployeeType = employee.EmployeeType.ToString(),
+                            }).ToList();
 
             return employees;
         }
