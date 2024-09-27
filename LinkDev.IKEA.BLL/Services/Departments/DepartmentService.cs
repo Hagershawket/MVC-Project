@@ -1,5 +1,5 @@
 ﻿using LinkDev.IKEA.BLL.Models.Departments;
-using LinkDev.IKEA.DAL.Entities.Department;
+using LinkDev.IKEA.DAL.Entities.Departments;
 using LinkDev.IKEA.DAL.Persistence.Repositories.Departments;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -22,7 +22,7 @@ namespace LinkDev.IKEA.BLL.Services.Departments
         public IEnumerable<DepartmentDto> GetAllDepartments()
         {
             var departments = _departmentRepository
-                .GetAllAsIQueryable()
+                .GetIQueryable()
                 .Where(E => !E.IsDeleted)
                 .Select(department => new DepartmentDto()
                 {

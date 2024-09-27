@@ -2,6 +2,7 @@
 using LinkDev.IKEA.DAL.Common.Enums;
 using LinkDev.IKEA.DAL.Entities.Employees;
 using LinkDev.IKEA.DAL.Persistence.Repositories.Employees;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,19 +23,21 @@ namespace LinkDev.IKEA.BLL.Services.Employees
         public IEnumerable<EmployeeDto> GetAllEmployees()
         {
             var employees = _employeeRepository
-                            .GetAllAsIQueryable()
+                            .GetIQueryable()
                             .Where(E => !E.IsDeleted)
+                            .Include(E => E.Department)
                             .Select(employee => new EmployeeDto()
-            {
-                Id = employee.Id,
-                Name = employee.Name,
-                Age = employee.Age,
-                IsActive = employee.IsActive,
-                Salary = employee.Salary,
-                Email = employee.Email,
-                Gender = employee.Gender.ToString(),
-                EmployeeType = employee.EmployeeType.ToString(),
-            }).ToList();
+                            {
+                                Id = employee.Id,
+                                Name = employee.Name,
+                                Age = employee.Age,
+                                IsActive = employee.IsActive,
+                                Salary = employee.Salary,
+                                Email = employee.Email,
+                                Gender = employee.Gender.ToString(),
+                                EmployeeType = employee.EmployeeType.ToString(),
+                                Department = employee.Department.Name
+                            }).ToList();
 
             return employees;
         }
@@ -57,6 +60,7 @@ namespace LinkDev.IKEA.BLL.Services.Employees
                 HiringDate = employee.HiringDate,
                 Gender = employee.Gender,
                 EmployeeType = employee.EmployeeType,
+                Department = employee.Department.Name,
             };
 
             return null;
@@ -75,6 +79,7 @@ namespace LinkDev.IKEA.BLL.Services.Employees
                 HiringDate = employeeDto.HiringDate,
                 Gender = employeeDto.Gender,
                 EmployeeType = employeeDto.EmployeeType,
+                DepartmentId = employeeDto.DepartmentId,
                 CreatedBy = 1,
                 LastModifiedBy = 1,
                 LastModifiedOn = DateTime.UtcNow,
@@ -99,6 +104,7 @@ namespace LinkDev.IKEA.BLL.Services.Employees
                 HiringDate = employeeDto.HiringDate,
                 Gender = employeeDto.Gender,
                 EmployeeType = employeeDto.EmployeeType,
+                DepartmentId= employeeDto.DepartmentId,
                 CreatedBy = 1,
                 LastModifiedBy = 1,
                 LastModifiedOn = DateTime.UtcNow,
