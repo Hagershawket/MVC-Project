@@ -3,19 +3,43 @@
     ViewData["Title"] = "Employees";
 }
 
+@if (!string.IsNullOrEmpty(@TempData["Message"] as string))
+{
+    <div class="position-fixed top-0 end-0 p-3" style="z-index: 11">
+        <div id="liveToast" class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
+            
+            <div class="toast-body bg-success text-white">
+                @TempData["Message"]
+                <button type="button" class="btn-close float-end" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>    
+}
+
 <h1>All Employees</h1>
 
 <br />
 <br />
 
-<a asp-controller="Employee" asp-action="Create" class="btn btn-primary"> Create New Employee</a>
+<a asp-controller="Employee" asp-action="Create" class="btn btn-primary"> <i class="fas fa-plus"></i> Create New Employee</a>
 
 <br />
+
+<form asp-action="Index" method="get" class="mt-5 row justify-content-center align-items-center">
+    <div class="row col-8 offset-1">
+        <div class="col-8">
+            <input type="text" name="search" class="form-control" id="searchInp" placeholder="Search By Name" />
+        </div>
+        <div class="col-4">
+            <input type="submit" value="Search" class="btn btn-success" />
+        </div>
+    </div>
+</form>
 
 @if (Model.Count() > 0)
 {
     <table class="table table-striped table-hover mt-4">
-        <thead class="text-center">
+        <thead class="text-center" id="employeeList">
             <tr>
                 <th>@Html.DisplayNameFor(D => D.Name)</th>
                 <th>@Html.DisplayNameFor(D => D.Email)</th>
@@ -30,7 +54,7 @@
                 <th>Delete</th>
             </tr>
         </thead>
-        <tbody class="text-center">
+        <tbody class="text-center" id="employeeList">
             @foreach (var employee in Model)
             {
                 <tr>
@@ -74,4 +98,34 @@ else
     <div class="alert alert-info mt-3">
         <h3> There is no Employees :( </h3>
     </div>
+}
+
+@section ValidationScripts {
+    <script>
+        var toastElement = document.getElementById('liveToast');
+        var toast = new bootstrap.Toast(toastElement, { autohide: true, delay: 3000 });
+
+        toast.show();
+    </script>
+
+
+    <script>
+        const searchBar = $('#searchInp');
+        const table = $('table');
+        searchBar.on('keyup', function (event) {
+            var searchValue = searchBar.val();
+            $.ajax({
+                url: '/Employee/Index',
+                type: 'Get',
+                data: { search: searchValue },
+                success: function (result) {
+                    table.html(result)
+                },
+                error: function (xhr, status, error) {
+                    console.log(error)
+                }
+
+            })
+        })
+    </script>
 }

@@ -1,12 +1,10 @@
-﻿@model CreatedEmployeeDto
+﻿@model EmployeeViewModel
 @inject IDepartmentService departmentService
 @{
-    ViewData["Title"] = "Create";
-
     var Departments = new SelectList(departmentService.GetAllDepartments(), nameof(DepartmentDto.Id), nameof(DepartmentDto.Name));
 }
 
-<form asp-action="Create" class="row col-6">
+<form asp-action="@ViewBag.Action" class="row col-6">
 
     <div asp-validation-summary="ModelOnly"></div>
 

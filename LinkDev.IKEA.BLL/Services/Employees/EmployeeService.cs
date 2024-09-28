@@ -20,11 +20,11 @@ namespace LinkDev.IKEA.BLL.Services.Employees
             _employeeRepository = employeeRepository;
         }
 
-        public IEnumerable<EmployeeDto> GetAllEmployees()
+        public IEnumerable<EmployeeDto> GetEmployees(string search)
         {
             var employees = _employeeRepository
                             .GetIQueryable()
-                            .Where(E => !E.IsDeleted)
+                            .Where(E => !E.IsDeleted && (string.IsNullOrEmpty(search) || E.Name.ToLower().Contains(search.ToLower())) )
                             .Include(E => E.Department)
                             .Select(employee => new EmployeeDto()
                             {
@@ -47,7 +47,7 @@ namespace LinkDev.IKEA.BLL.Services.Employees
             var employee = _employeeRepository.Get(id);
 
             if(employee is { })
-                return new EmployeeDetailsDto()
+            return new EmployeeDetailsDto()
             {
                 Id = employee.Id,
                 Name = employee.Name,
@@ -61,6 +61,7 @@ namespace LinkDev.IKEA.BLL.Services.Employees
                 Gender = employee.Gender,
                 EmployeeType = employee.EmployeeType,
                 Department = employee.Department.Name,
+                DepartmentId = employee.DepartmentId,
             };
 
             return null;

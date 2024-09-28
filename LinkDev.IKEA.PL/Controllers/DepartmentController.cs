@@ -3,6 +3,7 @@ using LinkDev.IKEA.BLL.Services.Departments;
 using LinkDev.IKEA.DAL.Entities.Departments;
 using LinkDev.IKEA.PL.ViewModels.Common;
 using LinkDev.IKEA.PL.ViewModels.Departments;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using System;
 
@@ -98,10 +99,11 @@ namespace LinkDev.IKEA.PL.Controllers
                 //            : used for transfering the data between 2 consuctive Requests
 
                 if (created)
-                    message = "Department is Created";
+                    message = "Department has been Created Successfully";
                 else
                     message = "Department is not Created";
 
+                TempData["Message"] = message;
                 return RedirectToAction(nameof(Index));
                 
 
@@ -170,9 +172,12 @@ namespace LinkDev.IKEA.PL.Controllers
                 var updated = _departmentService.UpdateDepartment(departmentToUpdate) > 0;
 
                 if (updated)
-                    return RedirectToAction(nameof(Index));
+                        message = "Department has been Updated Successfully";
+                    else
+                        message = "Department is not Updated";
 
-                message = "an error has occured during updating the department :(";
+                TempData["Message"] = message;
+                return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
             {
