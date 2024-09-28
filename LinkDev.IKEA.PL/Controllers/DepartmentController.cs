@@ -163,16 +163,16 @@ namespace LinkDev.IKEA.PL.Controllers
             try
             {
                 // Manual Mapping
-                /// var departmentToUpdate = new UpdatedDepartmentDto()
-                /// {
-                ///     Id = id,
-                ///     Name = department.Name,
-                ///     Code = department.Code,
-                ///     Description = department.Description,
-                ///     CreationDate = department.CreationDate,
-                /// };
+                var departmentToUpdate = new UpdatedDepartmentDto()
+                {
+                    Id = id,
+                    Name = department.Name,
+                    Code = department.Code,
+                    Description = department.Description,
+                    CreationDate = department.CreationDate,
+                };
 
-                var departmentToUpdate = _mapper.Map<UpdatedDepartmentDto>(department);
+                //var departmentToUpdate = _mapper.Map<UpdatedDepartmentDto>(department);
 
                 var updated = _departmentService.UpdateDepartment(departmentToUpdate) > 0;
 

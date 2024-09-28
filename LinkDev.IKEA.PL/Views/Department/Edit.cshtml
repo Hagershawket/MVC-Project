@@ -8,8 +8,18 @@
 
     <h1 class="col-6 my-4">Edit Department</h1>
 
-    <partial name="Partials/CreateEditDepartmentPartial" />
+    <form asp-action="@ViewBag.Action" class="col-6">
 
+        <div asp-validation-summary="ModelOnly"></div>
+
+        <partial name="Partials/CreateEditDepartmentPartial" />
+
+        <div class="mt-4">
+            <input type="submit" value="Edit" class="btn btn-primary" />
+            <a asp-action="Index" class="btn btn-light">Back to List</a>
+        </div>
+
+    </form>
 </div>
 
 @section ValidationScripts {
