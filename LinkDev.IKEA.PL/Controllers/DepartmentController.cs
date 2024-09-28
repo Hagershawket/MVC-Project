@@ -1,4 +1,5 @@
-﻿using LinkDev.IKEA.BLL.Models.Departments;
+﻿using AutoMapper;
+using LinkDev.IKEA.BLL.Models.Departments;
 using LinkDev.IKEA.BLL.Services.Departments;
 using LinkDev.IKEA.DAL.Entities.Departments;
 using LinkDev.IKEA.PL.ViewModels.Common;
@@ -16,11 +17,13 @@ namespace LinkDev.IKEA.PL.Controllers
         #region Services [Dependency Injection]
 
         private readonly IDepartmentService _departmentService;
+        private readonly IMapper _mapper;
         private readonly ILogger<DepartmentController> _logger;
         private readonly IWebHostEnvironment _environment;
-        public DepartmentController(IDepartmentService departmentService, ILogger<DepartmentController> logger, IWebHostEnvironment environment)
+        public DepartmentController(IDepartmentService departmentService, IMapper mapper, ILogger<DepartmentController> logger, IWebHostEnvironment environment)
         {
             _departmentService = departmentService;
+            _mapper = mapper;
             _logger = logger;
             _environment = environment;
         }
@@ -86,13 +89,16 @@ namespace LinkDev.IKEA.PL.Controllers
             string message = string.Empty;
             try
             {
-                var createdDepartment = new CreatedDepartmentDto()
-                {
-                    Name = departmentVM.Name,
-                    Code = departmentVM.Code,
-                    Description = departmentVM.Description,
-                    CreationDate = departmentVM.CreationDate,
-                };
+                // Manual Mapping
+                /// var createdDepartment = new CreatedDepartmentDto()
+                /// {
+                ///     Name = departmentVM.Name,
+                ///     Code = departmentVM.Code,
+                ///     Description = departmentVM.Description,
+                ///     CreationDate = departmentVM.CreationDate,
+                /// };
+
+                var createdDepartment = _mapper.Map<CreatedDepartmentDto>(departmentVM);
                 var created = _departmentService.CreateDepartment(createdDepartment) > 0;
 
                 // 3. TempData: is a property of Type Dictionary Object (introduced in ASP.NET Framework 3.5)
@@ -140,13 +146,9 @@ namespace LinkDev.IKEA.PL.Controllers
             if (department is null)
                 return NotFound();      // 404
 
-            return View(new DepartmentViewModel()
-            {
-                Name = department.Name,
-                Code = department.Code,
-                Description = department.Description,
-                CreationDate = department.CreationDate,
-            });
+            var departmentVM = _mapper.Map<DepartmentDetailsDto, DepartmentViewModel>(department);
+
+            return View(departmentVM);
         }
 
         [HttpPost]   // POST
@@ -160,14 +162,17 @@ namespace LinkDev.IKEA.PL.Controllers
 
             try
             {
-                var departmentToUpdate = new UpdatedDepartmentDto()
-                {
-                    Id = id,
-                    Name = department.Name,
-                    Code = department.Code,
-                    Description = department.Description,
-                    CreationDate = department.CreationDate,
-                };
+                // Manual Mapping
+                /// var departmentToUpdate = new UpdatedDepartmentDto()
+                /// {
+                ///     Id = id,
+                ///     Name = department.Name,
+                ///     Code = department.Code,
+                ///     Description = department.Description,
+                ///     CreationDate = department.CreationDate,
+                /// };
+
+                var departmentToUpdate = _mapper.Map<UpdatedDepartmentDto>(department);
 
                 var updated = _departmentService.UpdateDepartment(departmentToUpdate) > 0;
 
