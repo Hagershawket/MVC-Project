@@ -13,7 +13,7 @@ namespace LinkDev.IKEA.DAL.Persistence.Repositories.Departments
     public class DepartmentRepository : GenericRepository<Department>, IDepartmentRepository
     {
         public DepartmentRepository(ApplicationDbContext dbContext)
-            :base(dbContext) // ASK CLR for Object from ApplicationDbContext Implicitly
+            :base(dbContext)
         {
             
         }

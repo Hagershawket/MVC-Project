@@ -16,7 +16,7 @@ namespace LinkDev.IKEA.DAL.Persistence.Repositories.Employees
     public class EmployeeRepository : GenericRepository<Employee>, IEmployeeRepository
     {
         public EmployeeRepository(ApplicationDbContext dbContext)
-            :base(dbContext) // ASK CLR for Object from ApplicationDbContext Implicitly
+            :base(dbContext)
         {
             
         }
