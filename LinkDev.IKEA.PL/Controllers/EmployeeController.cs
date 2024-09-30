@@ -93,6 +93,7 @@ namespace LinkDev.IKEA.PL.Controllers
                     Gender = employeeVM.Gender,
                     EmployeeType = employeeVM.EmployeeType,
                     DepartmentId = employeeVM.DepartmentId,
+                    Image = employeeVM.Image,
                 };
                 var result = _employeeService.CreateEmployee(createdEmployee);
                 if (result > 0)

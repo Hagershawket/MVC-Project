@@ -4,7 +4,7 @@
     var Departments = new SelectList(departmentService.GetAllDepartments(), nameof(DepartmentDto.Id), nameof(DepartmentDto.Name));
 }
 
-<form asp-action="@ViewBag.Action" class="row col-6">
+<form asp-action="@ViewBag.Action" class="row col-6" enctype="multipart/form-data">
 
     <div asp-validation-summary="ModelOnly"></div>
 
@@ -72,6 +72,11 @@
             <input type="checkbox" asp-for="IsActive" class="form-check-input" />
             <label class="form-check-label" asp-for="IsActive"></label>
         </div>
+    </div>
+
+    <div class="form-group col-6 mt-3">
+        <label class="form-label" asp-for="Image"></label>
+        <input asp-for="Image" class="form-control" />
     </div>
 
     <div class="mt-4">

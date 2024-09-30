@@ -1,4 +1,5 @@
-﻿using LinkDev.IKEA.BLL.Models.Employees;
+﻿using LinkDev.IKEA.BLL.Common.Services.Attachments;
+using LinkDev.IKEA.BLL.Models.Employees;
 using LinkDev.IKEA.DAL.Common.Enums;
 using LinkDev.IKEA.DAL.Entities.Employees;
 using LinkDev.IKEA.DAL.Persistence.Repositories.Employees;
@@ -15,10 +16,12 @@ namespace LinkDev.IKEA.BLL.Services.Employees
     public class EmployeeService : IEmployeeService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IAttachmentService _attachmentService;
 
-        public EmployeeService(IUnitOfWork unitOfWork) // ASK CLR for Creating Object from Class Implmenting The Interface "IUnitOfWork"
+        public EmployeeService(IUnitOfWork unitOfWork, IAttachmentService attachmentService) // ASK CLR for Creating Object from Class Implmenting The Interface "IUnitOfWork"
         {
             _unitOfWork = unitOfWork;
+            _attachmentService = attachmentService;
         }
 
         public IEnumerable<EmployeeDto> GetEmployees(string search)
@@ -87,6 +90,9 @@ namespace LinkDev.IKEA.BLL.Services.Employees
                 LastModifiedOn = DateTime.UtcNow,
 
             };
+
+            if(employeeDto.Image is not null)
+                employee.Image = _attachmentService.Upload(employeeDto.Image, "images");
 
             _unitOfWork.EmployeeRepository.Add(employee);
 
