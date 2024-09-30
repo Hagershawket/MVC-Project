@@ -1,7 +1,7 @@
 ﻿@model EmployeeViewModel
 @inject IDepartmentService departmentService
 @{
-    var Departments = new SelectList(departmentService.GetAllDepartments(), nameof(DepartmentDto.Id), nameof(DepartmentDto.Name));
+    var Departments = new SelectList(await departmentService.GetAllDepartmentsAsync(), nameof(DepartmentDto.Id), nameof(DepartmentDto.Name));
 }
 
 <form asp-action="@ViewBag.Action" class="row col-6" enctype="multipart/form-data">
