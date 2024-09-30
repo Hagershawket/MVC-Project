@@ -40,7 +40,8 @@ namespace LinkDev.IKEA.BLL.Services.Employees
                                 Email = employee.Email,
                                 Gender = employee.Gender.ToString(),
                                 EmployeeType = employee.EmployeeType.ToString(),
-                                Department = employee.Department.Name
+                                Department = employee.Department.Name,
+                                Image = employee.Image
                             }).ToList();
 
             return employees;
@@ -66,6 +67,7 @@ namespace LinkDev.IKEA.BLL.Services.Employees
                 EmployeeType = employee.EmployeeType,
                 Department = employee.Department.Name,
                 DepartmentId = employee.DepartmentId,
+                Image = employee.Image,
             };
 
             return null;
