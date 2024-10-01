@@ -1,6 +1,10 @@
-﻿using LinkDev.IKEA.BLL.Models.Employees;
+﻿using LinkDev.IKEA.BLL.Models.Departments;
+using LinkDev.IKEA.BLL.Models.Employees;
 using LinkDev.IKEA.BLL.Services.Departments;
 using LinkDev.IKEA.BLL.Services.Employees;
+using LinkDev.IKEA.DAL.Entities.Departments;
+using LinkDev.IKEA.DAL.Entities.Employees;
+using LinkDev.IKEA.PL.ViewModels.Employees;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LinkDev.IKEA.PL.Controllers
@@ -29,9 +33,13 @@ namespace LinkDev.IKEA.PL.Controllers
         #region Index
 
         [HttpGet] // GET: /Employee/Index
-        public IActionResult Index()
+        public async Task<IActionResult> Index(string search)
         {
-            var employees = _employeeService.GetAllEmployees();
+            var employees = await _employeeService.GetEmployeesAsync(search);
+
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                return PartialView("Partials/_EmployeeListPartial", employees);
+
             return View(employees);
         }
 
@@ -40,12 +48,12 @@ namespace LinkDev.IKEA.PL.Controllers
         #region Details 
 
         [HttpGet] // /Employee/Details
-        public IActionResult Details(int? id)
+        public async Task<IActionResult> Details(int? id)
         {
             if (id is null)
                 return BadRequest();
 
-            var employee = _employeeService.GetEmployeeById(id.Value);
+            var employee = await _employeeService.GetEmployeeByIdAsync(id.Value);
             if (employee is null)
                 return NotFound();
 
@@ -64,22 +72,37 @@ namespace LinkDev.IKEA.PL.Controllers
 
         [HttpPost] // POST
         [ValidateAntiForgeryToken]
-        public IActionResult Create(CreatedEmployeeDto employee)
+        public async Task<IActionResult> Create(EmployeeViewModel employeeVM)
         {
             if (!ModelState.IsValid)            // Server-Side Validation
-                return View(employee);
+                return View(employeeVM);
 
             string message = string.Empty;
             try
             {
-                var result = _employeeService.CreateEmployee(employee);
+                var createdEmployee = new CreatedEmployeeDto()
+                {
+                    Name = employeeVM.Name,
+                    Age = employeeVM.Age,
+                    Address = employeeVM.Address,
+                    Salary = employeeVM.Salary,
+                    IsActive = employeeVM.IsActive,
+                    Email = employeeVM.Email,
+                    PhoneNumber = employeeVM.PhoneNumber,
+                    HiringDate = employeeVM.HiringDate,
+                    Gender = employeeVM.Gender,
+                    EmployeeType = employeeVM.EmployeeType,
+                    DepartmentId = employeeVM.DepartmentId,
+                    Image = employeeVM.Image,
+                };
+                var result = await _employeeService.CreateEmployeeAsync(createdEmployee);
                 if (result > 0)
                     return RedirectToAction(nameof(Index));
                 else
                 {
                     message = "Employee is not Created";
                     ModelState.AddModelError(string.Empty, message);
-                    return View(employee);
+                    return View(employeeVM);
                 }
 
             }
@@ -94,7 +117,7 @@ namespace LinkDev.IKEA.PL.Controllers
             }
 
             ModelState.AddModelError(string.Empty, message);
-            return View(employee);
+            return View(employeeVM);
         }
 
         #endregion
@@ -102,17 +125,17 @@ namespace LinkDev.IKEA.PL.Controllers
         #region Update
 
         [HttpGet]   // Employee/Edit/id?
-        public IActionResult Edit(int? id)
+        public async Task<IActionResult> Edit(int? id)
         {
             if (id is null)
                 return BadRequest();    // 400
         
-            var employee = _employeeService.GetEmployeeById(id.Value);
+            var employee = await _employeeService.GetEmployeeByIdAsync(id.Value);
         
             if (employee is null)
                 return NotFound();      // 404
         
-            return View(new UpdatedEmployeeDto()
+            return View(new EmployeeViewModel()
             {
                 Name = employee.Name,
                 Address = employee.Address,
@@ -124,26 +147,46 @@ namespace LinkDev.IKEA.PL.Controllers
                 EmployeeType = employee.EmployeeType,
                 Gender = employee.Gender,
                 HiringDate = employee.HiringDate,
+                DepartmentId = employee.DepartmentId,
             });
         }
         
         [HttpPost]   // POST
         [ValidateAntiForgeryToken]
-        public IActionResult Edit([FromRoute] int id, UpdatedEmployeeDto employee)
+        public async Task<IActionResult> Edit([FromRoute] int id, UpdatedEmployeeDto employeeVM)
         {
             if (!ModelState.IsValid)           // Server-Side Validation
-                return View(employee);
+                return View(employeeVM);
         
             var message = string.Empty;
         
             try
             {
-                var updated = _employeeService.UpdateEmployee(employee) > 0;
-        
+                //var employeeToUpdate = new UpdatedEmployeeDto()
+                //{
+                //    Name = employeeVM.Name,
+                //    Age = employeeVM.Age,
+                //    Address = employeeVM.Address,
+                //    Salary = employeeVM.Salary,
+                //    IsActive = employeeVM.IsActive,
+                //    Email = employeeVM.Email,
+                //    PhoneNumber = employeeVM.PhoneNumber,
+                //    HiringDate = employeeVM.HiringDate,
+                //    Gender = employeeVM.Gender,
+                //    EmployeeType = employeeVM.EmployeeType,
+                //    DepartmentId = employeeVM.DepartmentId,
+                //};
+
+                var updated = await _employeeService.UpdateEmployeeAsync(employeeVM) > 0;
+
                 if (updated)
-                    return RedirectToAction(nameof(Index));
+                    message = "Employee has been Updated Successfully";
+                else
+                    message = "Employee is not Updated";
+
+                TempData["Message"] = message;
+                return RedirectToAction(nameof(Index));
         
-                message = "an error has occured during updating the Employee :(";
             }
             catch (Exception ex)
             {
@@ -155,7 +198,7 @@ namespace LinkDev.IKEA.PL.Controllers
             }
         
             ModelState.AddModelError(string.Empty, message);
-            return View(employee);
+            return View(employeeVM);
         }
 
         #endregion
@@ -164,13 +207,13 @@ namespace LinkDev.IKEA.PL.Controllers
 
         [HttpPost]  // POST
         [ValidateAntiForgeryToken]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             var message = string.Empty;
 
             try
             {
-                var deleted = _employeeService.DeleteEmployee(id);
+                var deleted = await _employeeService.DeleteEmployeeAsync(id);
 
                 if (deleted)
                     return RedirectToAction(nameof(Index));

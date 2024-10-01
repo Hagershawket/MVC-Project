@@ -1,15 +1,9 @@
 ﻿using LinkDev.IKEA.DAL.Common.Enums;
-using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace LinkDev.IKEA.BLL.Models.Employees
+namespace LinkDev.IKEA.PL.ViewModels.Employees
 {
-    public class CreatedEmployeeDto
+    public class EmployeeViewModel
     {
         //[Required]
         [MaxLength(50, ErrorMessage = "Max Length of Name is 50 Chars")]
