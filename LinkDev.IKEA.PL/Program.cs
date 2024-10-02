@@ -3,21 +3,15 @@ using LinkDev.IKEA.BLL.Services.Departments;
 using LinkDev.IKEA.BLL.Services.Employees;
 using LinkDev.IKEA.DAL.Entities.Identity;
 using LinkDev.IKEA.DAL.Persistence.Data;
-using LinkDev.IKEA.DAL.Persistence.Repositories.Departments;
-using LinkDev.IKEA.DAL.Persistence.Repositories.Employees;
 using LinkDev.IKEA.DAL.Persistence.UnitOfWork;
 using LinkDev.IKEA.PL.Mapping;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using System.Configuration;
-using System.Reflection;
 
 namespace LinkDev.IKEA.PL
 {
-    public class Program
+	public class Program
     {
         // Entry Point
         public static void Main(string[] args)
