@@ -1,6 +1,8 @@
 ﻿using LinkDev.IKEA.DAL.Entities.Identity;
 using LinkDev.IKEA.PL.ViewModels.Common;
 using LinkDev.IKEA.PL.ViewModels.Identity;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -120,5 +122,33 @@ namespace LinkDev.IKEA.PL.Controllers
 		}
 
 		#endregion
-	}
+
+		#region Google Login
+
+		public IActionResult GoogleLogin()
+		{
+			var prop = new AuthenticationProperties()
+			{
+				RedirectUri = Url.Action(nameof(GoogleResponse))
+			};
+
+			return Challenge(prop, GoogleDefaults.AuthenticationScheme);
+		}
+
+        public async Task<IActionResult> GoogleResponse()
+		{
+			var result = await HttpContext.AuthenticateAsync(GoogleDefaults.AuthenticationScheme);
+			var schema = result.Principal.Identities.FirstOrDefault().Claims.Select(claim => new
+			{
+				claim.Issuer,
+				claim.OriginalIssuer,
+				claim.Type,
+				claim.Value
+			});
+
+			return RedirectToAction(nameof(HomeController.Index), "Home");
+		}
+
+        #endregion
+    }
 }

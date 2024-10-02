@@ -496,6 +496,52 @@ input.checkbox {
             animation-delay: 11s;
         }
 
+.google-login-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 20px;
+    margin-top: 15px;
+    background-color: #db4437;
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 16px;
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease;
+}
+
+    .google-login-btn:hover {
+        background-color: #c5382f;
+    }
+
+    .google-login-btn i {
+        margin-right: 10px;
+    }
+
+/* Divider Styling */
+.divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 20px 0;
+    width: 100%;
+}
+
+.divider-line {
+    border: none;
+    height: 1px;
+    background-color: #ccc;
+    width: 40%;
+}
+
+.divider-text {
+    margin: 0 10px;
+    font-size: 14px;
+    color: white;
+}
+
 @-webkit-keyframes square {
     0% {
         -webkit-transform: translateY(0);
