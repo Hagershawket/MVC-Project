@@ -18,6 +18,17 @@
 				<div class="clear"> </div>
 			</div>
 			<input type="submit" value="SIGNIN">
+			<!-- Divider with OR -->
+			<div class="divider">
+				<hr class="divider-line">
+				<span class="divider-text">OR</span>
+				<hr class="divider-line">
+			</div>
+
+			<!-- Google Login Button -->
+			<a asp-action="GoogleLogin" class="google-login-btn mb-2">
+				<i class="fab fa-google"></i> Log in with Google
+			</a>
 		</form>
 		<p>If You Don't have an Account. <a asp-action="SignUp"> Register Now!</a></p>
 	</div>
@@ -25,5 +36,6 @@
 
 @section ValidationScripts {
 	<partial name="_ValidationScriptsPartial" />
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 }
 

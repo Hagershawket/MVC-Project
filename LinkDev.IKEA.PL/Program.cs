@@ -3,17 +3,15 @@ using LinkDev.IKEA.BLL.Services.Departments;
 using LinkDev.IKEA.BLL.Services.Employees;
 using LinkDev.IKEA.DAL.Entities.Identity;
 using LinkDev.IKEA.DAL.Persistence.Data;
-using LinkDev.IKEA.DAL.Persistence.Repositories.Departments;
-using LinkDev.IKEA.DAL.Persistence.Repositories.Employees;
 using LinkDev.IKEA.DAL.Persistence.UnitOfWork;
 using LinkDev.IKEA.PL.Mapping;
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using System.Reflection;
 
 namespace LinkDev.IKEA.PL
 {
-    public class Program
+	public class Program
     {
         // Entry Point
         public static void Main(string[] args)
@@ -75,23 +73,41 @@ namespace LinkDev.IKEA.PL
                 options.ExpireTimeSpan = TimeSpan.FromDays(1);
             });
 
-			// builder.Services.AddAuthentication();
-			// builder.Services.AddAuthentication("Identity.Application");
-			// builder.Services.AddAuthentication(options =>
+            // builder.Services.AddAuthentication();
+            // builder.Services.AddAuthentication("Identity.Application");
+            // builder.Services.AddAuthentication(options =>
             // {
             //     options.DefaultAuthenticateScheme = "Identity.Application";
             //     options.DefaultChallengeScheme = "Identity.Application";
-			// }).AddCookie("Hamada", ".AspNetCore.Hamada", options =>
+            // }).AddCookie("Hamada", ".AspNetCore.Hamada", options =>
             // {
-			// 	options.LoginPath = "/Account/SignIn";
-			// 	options.LogoutPath = "/Account/SignIn";
-			// 	options.AccessDeniedPath = "/Home/Error";
-			// 	options.ExpireTimeSpan = TimeSpan.FromDays(10);
-			// });
+            // 	options.LoginPath = "/Account/SignIn";
+            // 	options.LogoutPath = "/Account/SignIn";
+            // 	options.AccessDeniedPath = "/Home/Error";
+            // 	options.ExpireTimeSpan = TimeSpan.FromDays(10);
+            // });
 
-			#endregion
+            #region Google Authentication
 
-			var app = builder.Build();
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = GoogleDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+            })
+            .AddGoogle(options =>
+            {
+                IConfigurationSection googleAuthNSection = builder.Configuration.GetSection("Authentication:Google");
+
+                options.ClientId = googleAuthNSection["ClientId"];
+                options.ClientSecret = googleAuthNSection["ClientSecret"];
+                options.CallbackPath = "/signin-google";
+            });
+
+            #endregion
+
+            #endregion
+
+            var app = builder.Build();
 
             #region Configure Kestrel Middlewares
 

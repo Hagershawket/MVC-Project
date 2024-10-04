@@ -3,14 +3,15 @@
 <table class="table table-striped table-hover mt-4">
     <thead class="text-center">
         <tr>
-            <th>@Html.DisplayNameFor(D => D.Name)</th>
-            <th>@Html.DisplayNameFor(D => D.Email)</th>
-            <th>@Html.DisplayNameFor(D => D.Department)</th>
-            <th>@Html.DisplayNameFor(D => D.EmployeeType)</th>
-            <th>@Html.DisplayNameFor(D => D.Salary)</th>
-            <th>@Html.DisplayNameFor(D => D.Age)</th>
-            <th>@Html.DisplayNameFor(D => D.Gender)</th>
-            <th>@Html.DisplayNameFor(D => D.IsActive)</th>
+            <th>@Html.DisplayNameFor(E => E.Image)</th>
+            <th>@Html.DisplayNameFor(E => E.Name)</th>
+            <th>@Html.DisplayNameFor(E => E.Email)</th>
+            <th>@Html.DisplayNameFor(E => E.Department)</th>
+            <th>@Html.DisplayNameFor(E => E.EmployeeType)</th>
+            <th>@Html.DisplayNameFor(E => E.Salary)</th>
+            <th>@Html.DisplayNameFor(E => E.Age)</th>
+            <th>@Html.DisplayNameFor(E => E.Gender)</th>
+            <th>@Html.DisplayNameFor(E => E.IsActive)</th>
             <th>Details</th>
             <th>Update</th>
             <th>Delete</th>
@@ -20,6 +21,12 @@
         @foreach (var employee in Model)
         {
             <tr>
+                <td>
+                    <img src="@(string.IsNullOrEmpty(employee.Image) ? $"https://ui-avatars.com/api/?name={employee.Name}&background=random" : $"files/images/{employee.Image}")"
+                         alt="@employee.Name"
+                         title="@employee.Name"
+                         class="img-fluid rounded-circle" width="50px" height="50px" />
+                </td>
                 <td>@Html.DisplayFor(X => employee.Name)</td>
                 <td>@Html.DisplayFor(X => employee.Email)</td>
                 <td>@Html.DisplayFor(X => employee.Department)</td>

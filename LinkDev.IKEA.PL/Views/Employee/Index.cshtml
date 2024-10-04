@@ -60,7 +60,10 @@
             {
                 <tr>
                     <td>
-                        <img src="~/files/images/@employee.Image" alt="@employee.Name" title="@employee.Name" class="img-fluid rounded-circle" width="50px" height="50px" />
+                        <img src="@(string.IsNullOrEmpty(employee.Image) ? $"https://ui-avatars.com/api/?name={employee.Name}&background=random" : $"files/images/{employee.Image}")"
+                             alt="@employee.Name" 
+                             title="@employee.Name" 
+                             class="img-fluid rounded-circle" width="50px" height="50px" />
                     </td>
                     <td>@Html.DisplayFor(X => employee.Name)</td>
                     <td>@Html.DisplayFor(X => employee.Email)</td>

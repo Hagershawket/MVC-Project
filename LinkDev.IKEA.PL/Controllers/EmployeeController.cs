@@ -1,9 +1,11 @@
-﻿using LinkDev.IKEA.BLL.Models.Departments;
+﻿using AutoMapper;
+using LinkDev.IKEA.BLL.Models.Departments;
 using LinkDev.IKEA.BLL.Models.Employees;
 using LinkDev.IKEA.BLL.Services.Departments;
 using LinkDev.IKEA.BLL.Services.Employees;
 using LinkDev.IKEA.DAL.Entities.Departments;
 using LinkDev.IKEA.DAL.Entities.Employees;
+using LinkDev.IKEA.PL.ViewModels.Departments;
 using LinkDev.IKEA.PL.ViewModels.Employees;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -19,15 +21,19 @@ namespace LinkDev.IKEA.PL.Controllers
         private readonly IDepartmentService? _departmentService;
         private readonly ILogger<EmployeeController> _logger;
         private readonly IWebHostEnvironment _environment;
+        private readonly IMapper _mapper;
+
         public EmployeeController(
             IEmployeeService employeeService, 
             ILogger<EmployeeController> logger, 
-            IWebHostEnvironment environment
+            IWebHostEnvironment environment,
+            IMapper mapper
             )
         {
             _employeeService = employeeService;
             _logger = logger;
             _environment = environment;
+            _mapper = mapper;
         }
 
         #endregion
@@ -82,30 +88,33 @@ namespace LinkDev.IKEA.PL.Controllers
             string message = string.Empty;
             try
             {
-                var createdEmployee = new CreatedEmployeeDto()
-                {
-                    Name = employeeVM.Name,
-                    Age = employeeVM.Age,
-                    Address = employeeVM.Address,
-                    Salary = employeeVM.Salary,
-                    IsActive = employeeVM.IsActive,
-                    Email = employeeVM.Email,
-                    PhoneNumber = employeeVM.PhoneNumber,
-                    HiringDate = employeeVM.HiringDate,
-                    Gender = employeeVM.Gender,
-                    EmployeeType = employeeVM.EmployeeType,
-                    DepartmentId = employeeVM.DepartmentId,
-                    Image = employeeVM.Image,
-                };
+                // Manual Mapping
+                /// var createdEmployee = new CreatedEmployeeDto()
+                /// {
+                ///     Name = employeeVM.Name,
+                ///     Age = employeeVM.Age,
+                ///     Address = employeeVM.Address,
+                ///     Salary = employeeVM.Salary,
+                ///     IsActive = employeeVM.IsActive,
+                ///     Email = employeeVM.Email,
+                ///     PhoneNumber = employeeVM.PhoneNumber,
+                ///     HiringDate = employeeVM.HiringDate,
+                ///     Gender = employeeVM.Gender,
+                ///     EmployeeType = employeeVM.EmployeeType,
+                ///     DepartmentId = employeeVM.DepartmentId,
+                ///     Image = employeeVM.Image,
+                /// };
+
+                var createdEmployee = _mapper.Map<CreatedEmployeeDto>(employeeVM);
+
                 var result = await _employeeService.CreateEmployeeAsync(createdEmployee);
                 if (result > 0)
-                    return RedirectToAction(nameof(Index));
+                    message = "Employee has been Created Successfully.";                  
                 else
-                {
-                    message = "Employee is not Created";
-                    ModelState.AddModelError(string.Empty, message);
-                    return View(employeeVM);
-                }
+                    message = "Failed to create employee.";
+
+                TempData["Message"] = message;
+                return RedirectToAction(nameof(Index));
 
             }
             catch (Exception ex)
@@ -136,26 +145,31 @@ namespace LinkDev.IKEA.PL.Controllers
         
             if (employee is null)
                 return NotFound();      // 404
-        
-            return View(new EmployeeViewModel()
-            {
-                Name = employee.Name,
-                Address = employee.Address,
-                Email = employee.Email,
-                Age = employee.Age,
-                Salary = employee.Salary,
-                PhoneNumber = employee.PhoneNumber,
-                IsActive = employee.IsActive,
-                EmployeeType = employee.EmployeeType,
-                Gender = employee.Gender,
-                HiringDate = employee.HiringDate,
-                DepartmentId = employee.DepartmentId,
-            });
+
+            // Manual Mapping 
+            /// var departmentVM new EmployeeViewModel()
+            /// {
+            ///     Name = employee.Name,
+            ///     Address = employee.Address,
+            ///     Email = employee.Email,
+            ///     Age = employee.Age,
+            ///     Salary = employee.Salary,
+            ///     PhoneNumber = employee.PhoneNumber,
+            ///     IsActive = employee.IsActive,
+            ///     EmployeeType = employee.EmployeeType,
+            ///     Gender = employee.Gender,
+            ///     HiringDate = employee.HiringDate,
+            ///     DepartmentId = employee.DepartmentId,
+            /// };
+            
+            var employeeVM = _mapper.Map<EmployeeDetailsDto, EmployeeViewModel>(employee);
+
+            return View(employeeVM);
         }
         
         [HttpPost]   // POST
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit([FromRoute] int id, UpdatedEmployeeDto employeeVM)
+        public async Task<IActionResult> Edit([FromRoute] int id, EmployeeViewModel employeeVM)
         {
             if (!ModelState.IsValid)           // Server-Side Validation
                 return View(employeeVM);
@@ -164,27 +178,33 @@ namespace LinkDev.IKEA.PL.Controllers
         
             try
             {
-                //var employeeToUpdate = new UpdatedEmployeeDto()
-                //{
-                //    Name = employeeVM.Name,
-                //    Age = employeeVM.Age,
-                //    Address = employeeVM.Address,
-                //    Salary = employeeVM.Salary,
-                //    IsActive = employeeVM.IsActive,
-                //    Email = employeeVM.Email,
-                //    PhoneNumber = employeeVM.PhoneNumber,
-                //    HiringDate = employeeVM.HiringDate,
-                //    Gender = employeeVM.Gender,
-                //    EmployeeType = employeeVM.EmployeeType,
-                //    DepartmentId = employeeVM.DepartmentId,
-                //};
+                // Manual Mapping
+                /// var employeeToUpdate = new UpdatedEmployeeDto()
+                /// {
+                ///     Id = id,
+                ///     Name = employeeVM.Name,
+                ///     Age = employeeVM.Age,
+                ///     Address = employeeVM.Address,
+                ///     Salary = employeeVM.Salary,
+                ///     IsActive = employeeVM.IsActive,
+                ///     Email = employeeVM.Email,
+                ///     PhoneNumber = employeeVM.PhoneNumber,
+                ///     HiringDate = employeeVM.HiringDate,
+                ///     Gender = employeeVM.Gender,
+                ///     EmployeeType = employeeVM.EmployeeType,
+                ///     DepartmentId = employeeVM.DepartmentId,
+                /// };
 
-                var updated = await _employeeService.UpdateEmployeeAsync(employeeVM) > 0;
+                var employeeToUpdate = _mapper.Map<UpdatedEmployeeDto>(employeeVM);
+
+                employeeToUpdate.Id = id;
+
+                var updated = await _employeeService.UpdateEmployeeAsync(employeeToUpdate) > 0;
 
                 if (updated)
                     message = "Employee has been Updated Successfully";
                 else
-                    message = "Employee is not Updated";
+                    message = "Failed to update employee.";
 
                 TempData["Message"] = message;
                 return RedirectToAction(nameof(Index));
